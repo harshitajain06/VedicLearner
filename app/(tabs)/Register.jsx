@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -16,7 +16,7 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (user) {
-      navigation.replace('Home');
+      navigation.replace('Drawer');
     }
   }, [user]);
 
@@ -28,17 +28,14 @@ const RegisterScreen = () => {
       // Send email verification
       await sendEmailVerification(user);
 
-      // Show success alert
       Alert.alert('Success', 'Account created successfully! Please verify your email.');
 
-      // Show success toast
       Toast.show({
         type: 'success',
         text1: 'Account created successfully!',
         text2: 'Please verify your email.',
       });
 
-      // Navigate to login screen
       navigation.navigate('Login');
     } catch (error) {
       let errorMessage;
@@ -59,10 +56,8 @@ const RegisterScreen = () => {
           errorMessage = 'An unknown error occurred. Please try again later.';
       }
 
-      // Show error alert
       Alert.alert('Error', errorMessage);
 
-      // Show error toast
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -73,6 +68,9 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Logo at the top */}
+      <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+      
       <Text style={styles.title}>Sign Up</Text>
 
       <TextInput
@@ -135,9 +133,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f7f7f7',
-    paddingHorizontal: 20,
     backgroundColor: '#DCE9FE',
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 100,  // Adjust the width as needed
+    height: 100, // Adjust the height as needed
+    marginBottom: 20,
   },
   title: {
     fontSize: 36,
@@ -180,7 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:10
+    marginTop: 10,
   },
   loginText: {
     color: '#333',

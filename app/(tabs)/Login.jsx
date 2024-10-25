@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      navigation.replace('Home');
+      navigation.replace('Drawer');
     }
   }, [user]);
 
@@ -34,7 +34,7 @@ const Login = () => {
       });
 
       // Navigate to the home screen or dashboard
-      navigation.navigate('MainTabs');
+      navigation.navigate('Drawer');
     } catch (error) {
       let errorMessage;
       switch (error.code) {
@@ -68,8 +68,13 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      {/* Logo */}
+      <Image source={require('../../assets/images/Logo.png')} style={styles.logo} />
+
+      {/* Title */}
       <Text style={styles.title}>Login</Text>
 
+      {/* Email Input */}
       <TextInput
         style={[
           styles.input,
@@ -82,6 +87,8 @@ const Login = () => {
         onFocus={() => setIsFocused('email')}
         onBlur={() => setIsFocused(null)}
       />
+
+      {/* Password Input */}
       <TextInput
         style={[
           styles.input,
@@ -96,11 +103,13 @@ const Login = () => {
         onBlur={() => setIsFocused(null)}
       />
 
+      {/* Login Button */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
+        {/* Register Link */}
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -118,9 +127,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f7f7f7',
-    paddingHorizontal: 20,
     backgroundColor: '#DCE9FE',
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 100, // Adjust size to fit well on the screen
+    height: 100,
+    marginBottom: 20,
   },
   title: {
     fontSize: 36,
@@ -149,10 +162,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 20, height: 10 },
-    shadowOpacity: 0.8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 8,
+    elevation: 4,
   },
   buttonText: {
     color: '#567396',
