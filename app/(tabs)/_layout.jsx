@@ -27,8 +27,8 @@ import AdvancedOperations from './AdvancedOperations';
 
 import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '../../hooks/useColorScheme';
-import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
+import { signOut, deleteUser } from 'firebase/auth';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,7 +100,7 @@ const BottomTabs = () => {
   );
 };
 
-// Drawer
+// Drawer Navigator
 const DrawerNavigator = () => {
   const navigation = useNavigation();
 
@@ -129,9 +129,42 @@ const DrawerNavigator = () => {
     );
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const user = auth.currentUser;
+              if (user) {
+                await deleteUser(user);
+                navigation.replace('Login');
+              } else {
+                Alert.alert('Error', 'No user is currently signed in.');
+              }
+            } catch (err) {
+              console.error('Delete Error:', err);
+              Alert.alert(
+                'Error',
+                'Failed to delete account. Please re-login and try again.'
+              );
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <Drawer.Navigator initialRouteName="MainTabs">
       <Drawer.Screen name="MainTabs" component={BottomTabs} options={{ title: 'Home' }} />
+
       <Drawer.Screen
         name="Logout"
         component={BottomTabs}
@@ -148,11 +181,28 @@ const DrawerNavigator = () => {
           },
         }}
       />
+
+      <Drawer.Screen
+        name="DeleteAccount"
+        component={BottomTabs}
+        options={{
+          title: 'Delete Account',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="trash-outline" size={size} color={color} />
+          ),
+        }}
+        listeners={{
+          drawerItemPress: (e) => {
+            e.preventDefault();
+            handleDeleteAccount();
+          },
+        }}
+      />
     </Drawer.Navigator>
   );
 };
 
-// Main Stack
+// Main Stack Layout
 export default function StackLayout() {
   const colorScheme = useColorScheme();
 
