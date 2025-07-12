@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Platform,
 } from "react-native";
 
 const MulPractice = ({ navigation }) => {
@@ -32,16 +33,25 @@ const MulPractice = ({ navigation }) => {
 
   const handleOptionPress = (option) => {
     if (option === question.correctAnswer) {
-      Alert.alert("Correct!", "You selected the right answer.", [
-        {
-          text: "Next Question",
-          onPress: () => setQuestion(generateQuestion()),
-        },
-      ]);
+      if (Platform.OS === "web") {
+        window.alert("Correct! You selected the right answer.");
+        setQuestion(generateQuestion());
+      } else {
+        Alert.alert("Correct!", "You selected the right answer.", [
+          {
+            text: "Next Question",
+            onPress: () => setQuestion(generateQuestion()),
+          },
+        ]);
+      }
     } else {
-      Alert.alert("Incorrect", "That is not the correct answer.", [
-        { text: "Try Again" },
-      ]);
+      if (Platform.OS === "web") {
+        window.alert("Incorrect! That is not the correct answer.");
+      } else {
+        Alert.alert("Incorrect", "That is not the correct answer.", [
+          { text: "Try Again" },
+        ]);
+      }
     }
   };
 
@@ -126,6 +136,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginVertical: 8,
   },
   option1: {
     backgroundColor: "#ffe600",
@@ -148,6 +159,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 20,
   },
   home: {
     backgroundColor: "#212121",
